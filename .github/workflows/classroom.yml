@@ -1,0 +1,70 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: lineOfStars
+      id: lineofstars
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: lineOfStars
+        setup-command: ''
+        command: make test try=lineOfStars
+        timeout: 10
+        max-score: 1
+    - name: power
+      id: power
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: power
+        setup-command: ''
+        command: make test try=power
+        timeout: 10
+        max-score: 1
+    - name: stars
+      id: stars
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: stars
+        setup-command: ''
+        command: make test try=stars
+        timeout: 10
+        max-score: 1
+    - name: isPalindromeR
+      id: ispalindromer
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: isPalindromeR
+        setup-command: ''
+        command: make test try=isPalindromeR
+        timeout: 10
+        max-score: 1
+    - name: reverse
+      id: reverse
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: reverse
+        setup-command: ''
+        command: make test try=reverse
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        LINEOFSTARS_RESULTS: "${{steps.lineofstars.outputs.result}}"
+        POWER_RESULTS: "${{steps.power.outputs.result}}"
+        STARS_RESULTS: "${{steps.stars.outputs.result}}"
+        ISPALINDROMER_RESULTS: "${{steps.ispalindromer.outputs.result}}"
+        REVERSE_RESULTS: "${{steps.reverse.outputs.result}}"
+      with:
+        runners: lineofstars,power,stars,ispalindromer,reverse
